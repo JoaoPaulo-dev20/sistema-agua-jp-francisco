@@ -6,10 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 
 class Consumidor extends Model
 {
+    protected $table = 'consumidores';
     protected $fillable = ['nome', 'endereco', 'numero_medidor', 'telefone'];
 
-public function leituras()
-{
-    return $this->hasMany(Leitura::class);
-}
+    public function leituras()
+    {
+        return $this->hasMany(Leitura::class);
+    }
 }
