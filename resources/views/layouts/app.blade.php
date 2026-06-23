@@ -8,13 +8,29 @@
 <body>
 <nav class="navbar navbar-expand navbar-dark bg-primary">
     <div class="container">
-        <a class="navbar-brand" href="{{ route('consumidores.index') }}">💧 Água</a>
-        <div class="navbar-nav">
-            <a class="nav-link text-white" href="{{ route('consumidores.index') }}">Consumidores</a>
-            <a class="nav-link text-white" href="{{ route('leituras.create') }}">Registrar Leitura</a>
-            <a class="nav-link text-white" href="{{ route('faturas.index') }}">Faturas</a>
-            <a class="nav-link text-white" href="{{ route('configuracao.edit') }}">Configuração</a>
+        <a class="navbar-brand" href="{{ route('leituras.create') }}">💧 Água</a>
+        <div class="navbar-nav me-auto">
+            @auth
+                @if(auth()->user()->role === 'admin')
+                    <a class="nav-link text-white" href="{{ route('consumidores.index') }}">Consumidores</a>
+                    <a class="nav-link text-white" href="{{ route('faturas.index') }}">Faturas</a>
+                    <a class="nav-link text-white" href="{{ route('configuracao.edit') }}">Configuração</a>
+                @endif
+                <a class="nav-link text-white" href="{{ route('leituras.create') }}">Registrar Leitura</a>
+            @endauth
         </div>
+        @auth
+        <div class="navbar-nav">
+            <span class="nav-link text-white opacity-75">
+                {{ auth()->user()->name }}
+                <span class="badge bg-light text-dark ms-1">{{ auth()->user()->role }}</span>
+            </span>
+            <form method="POST" action="{{ route('logout') }}" class="d-inline">
+                @csrf
+                <button class="btn btn-sm btn-outline-light ms-2">Sair</button>
+            </form>
+        </div>
+        @endauth
     </div>
 </nav>
 <div class="container mt-4">
