@@ -6,10 +6,15 @@ use App\Models\Consumidor;
 use App\Models\Leitura;
 use App\Models\Fatura;
 use App\Models\ConfiguracaoTaxa;
+use App\Services\FaturaCalculatorService;
 use Illuminate\Http\Request;
 
 class LeituraController extends Controller
 {
+    public function __construct(
+        private FaturaCalculatorService $calculator
+    ) {}
+
     public function create()
     {
         $consumidores = Consumidor::orderBy('nome')->get();
@@ -58,10 +63,12 @@ class LeituraController extends Controller
 
         $config = ConfiguracaoTaxa::first() ?? ConfiguracaoTaxa::create(['taxa_fixa' => 25, 'valor_excedente' => 2]);
 
-        $valorTotal = $config->taxa_fixa;
-        if ($consumo > 10) {
-            $valorTotal += ($consumo - 10) * $config->valor_excedente;
-        }
+        $valorTotal = $this->calculator->calcular(
+            $consumo,
+            $config->taxa_fixa,
+            10.0,
+            $config->valor_excedente
+        );
 
         Fatura::create([
             'leitura_id' => $leitura->id,
