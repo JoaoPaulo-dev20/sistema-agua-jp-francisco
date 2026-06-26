@@ -19,7 +19,7 @@ Route::middleware(['auth'])->group(function () {
 
     // Somente admin
     Route::middleware([CheckAdmin::class])->group(function () {
-        Route::resource('consumidores', ConsumidorController::class)->except(['show', 'destroy']);
+        Route::resource('consumidores', ConsumidorController::class)->except(['destroy']);
         Route::get('/faturas', [FaturaController::class, 'index'])->name('faturas.index');
         Route::patch('/faturas/{fatura}/pagar', [FaturaController::class, 'marcarPago'])->name('faturas.pagar');
         Route::get('/configuracao-taxa', [ConfiguracaoTaxaController::class, 'edit'])->name('configuracao.edit');

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Consumidor;
+use App\Models\LogAcesso;
 use Illuminate\Http\Request;
 
 class ConsumidorController extends Controller
@@ -16,6 +17,22 @@ class ConsumidorController extends Controller
     public function create()
     {
         return view('consumidores.create');
+    }
+
+    public function show(Consumidor $consumidor)
+    {
+        LogAcesso::create([
+            'user_id' => auth()->id(),
+            'consumidor_id' => $consumidor->id,
+            'acao' => 'visualizou dados do consumidor',
+        ]);
+
+        $logs = LogAcesso::with('user')
+            ->where('consumidor_id', $consumidor->id)
+            ->latest()
+            ->get();
+
+        return view('consumidores.show', compact('consumidor', 'logs'));
     }
 
     public function store(Request $request)
@@ -34,6 +51,12 @@ class ConsumidorController extends Controller
 
     public function edit(Consumidor $consumidor)
     {
+        LogAcesso::create([
+            'user_id' => auth()->id(),
+            'consumidor_id' => $consumidor->id,
+            'acao' => 'visualizou dados do consumidor',
+        ]);
+
         return view('consumidores.edit', compact('consumidor'));
     }
 
